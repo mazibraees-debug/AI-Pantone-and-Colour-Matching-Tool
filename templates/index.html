@@ -20,7 +20,7 @@
 
 <div class="main-grid">
 
-<!-- LEFT PANEL -->
+<!-- LEFT -->
 <div class="upload-panel">
 
 <form action="/extract" method="post" enctype="multipart/form-data" class="upload-zone">
@@ -34,7 +34,7 @@
 
 </div>
 
-<!-- RIGHT PANEL -->
+<!-- RIGHT -->
 <div class="results-panel">
 
 {% if colors %}
@@ -68,7 +68,6 @@
 <p><strong>Pantone:</strong> <span id="pantone">{{ match.pantone.name }}</span></p>
 <p><strong>CMYK:</strong> <span id="cmyk">C{{ match.cmyk.c }} M{{ match.cmyk.m }} Y{{ match.cmyk.y }} K{{ match.cmyk.k }}</span></p>
 
-<!-- ⭐ Recommendations -->
 <h3>Better Color Suggestions</h3>
 <div style="display:flex; gap:15px;">
 {% for rec in match.recommendations %}
