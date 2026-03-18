@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pantone & Colour Matcher</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="site-header">
+    <h1>Pantone & Colour Matcher</h1>
+</header>
+
+{% if error %}
+<div class="error-banner">{{ error }}</div>
+{% endif %}
+
+<div class="main-grid">
+
+<!-- LEFT PANEL -->
+<div class="upload-panel">
+
+<form action="/extract" method="post" enctype="multipart/form-data" class="upload-zone">
+    <input type="file" name="image" required>
+    <button class="btn-primary">Upload</button>
+</form>
+
+{% if image_url %}
+<img id="uploaded_image" src="{{ image_url }}">
+{% endif %}
+
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="results-panel">
+
+{% if colors %}
+<h3>Extracted Colours</h3>
+
+<div class="swatch-row">
+{% for c in colors %}
+<div class="swatch"
+     data-hex="{{ c.hex }}"
+     data-r="{{ c.rgb.r }}"
+     data-g="{{ c.rgb.g }}"
+     data-b="{{ c.rgb.b }}"
+     data-pantone="{{ c.pantone.name }}"
+     data-c="{{ c.cmyk.c }}"
+     data-m="{{ c.cmyk.m }}"
+     data-y="{{ c.cmyk.y }}"
+     data-k="{{ c.cmyk.k }}"
+     style="background: {{ c.hex }}">
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if match %}
+<div class="results-section">
+
+<div id="preview" style="width:60px;height:60px;background:{{ match.hex }}"></div>
+
+<p><strong>HEX:</strong> <span id="hex">{{ match.hex }}</span></p>
+<p><strong>RGB:</strong> <span id="rgb">({{ match.rgb.r }}, {{ match.rgb.g }}, {{ match.rgb.b }})</span></p>
+<p><strong>Pantone:</strong> <span id="pantone">{{ match.pantone.name }}</span></p>
+<p><strong>CMYK:</strong> <span id="cmyk">C{{ match.cmyk.c }} M{{ match.cmyk.m }} Y{{ match.cmyk.y }} K{{ match.cmyk.k }}</span></p>
+
+<!-- ⭐ Recommendations -->
+<h3>Better Color Suggestions</h3>
+<div style="display:flex; gap:15px;">
+{% for rec in match.recommendations %}
+<div style="text-align:center;">
+<div style="width:60px;height:60px;background:{{ rec.hex }}"></div>
+<p><b>{{ rec.type }}</b></p>
+<p style="font-size:12px;">{{ rec.reason }}</p>
+</div>
+{% endfor %}
+</div>
+
+</div>
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll(".swatch").forEach(s=>{
+    s.onclick=()=>{
+        document.getElementById("preview").style.background=s.dataset.hex;
+        document.getElementById("hex").innerText=s.dataset.hex;
+        document.getElementById("rgb").innerText=`(${s.dataset.r},${s.dataset.g},${s.dataset.b})`;
+        document.getElementById("pantone").innerText=s.dataset.pantone;
+        document.getElementById("cmyk").innerText=`C${s.dataset.c} M${s.dataset.m} Y${s.dataset.y} K${s.dataset.k}`;
+    }
+})
+</script>
+
+</body>
+</html>
